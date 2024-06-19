@@ -10,7 +10,6 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
-
 class Workout {
     date = new Date();
     id = (Math.random() + '').slice(10);
@@ -154,7 +153,22 @@ class App {
         .openPopup();
     };
 
-    _renderWorkout(){
+    _renderWorkout(workout){
+        console.log()
+        const html = `
+        <li class="workout workout--${workout.type}" data-id="${workout.id}">
+          <h2 class="workout__title">Running on ${workout.date}</h2>
+          <div class="workout__details">
+            <span class="workout__icon">🏃‍♂️</span>
+            <span class="workout__value">${workout.distance}</span>
+            <span class="workout__unit">km</span>
+          </div>
+          <div class="workout__details">
+            <span class="workout__icon">⏱</span>
+            <span class="workout__value">${workout.duration}</span>
+            <span class="workout__unit">min</span>
+          </div>`
+          console.log(html);
     };
 };
 
