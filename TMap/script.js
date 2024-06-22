@@ -134,7 +134,7 @@ class App {
         this._renderWorkoutMarker(workout);
         this._renderWorkout(workout);
 
-        form.classList.add("hidden");
+        // form.classList.add("hidden");
         inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value = "";
     
         this.#counter ++;
@@ -154,12 +154,11 @@ class App {
     };
 
     _renderWorkout(workout){
-        console.log()
         const html = `
         <li class="workout workout--${workout.type}" data-id="${workout.id}">
-          <h2 class="workout__title">Running on ${workout.date}</h2>
+          <h2 class="workout__title">"${workout.type === 'running' ? 'Running' : 'Cycling'} on ${workout.date.toString().slice(4,10)}"</h2>
           <div class="workout__details">
-            <span class="workout__icon">🏃‍♂️</span>
+            <span class="workout__icon">${workout.type === 'running' ? "🏃‍♂️" : "🚴‍♀️"}</span>
             <span class="workout__value">${workout.distance}</span>
             <span class="workout__unit">km</span>
           </div>
@@ -167,9 +166,25 @@ class App {
             <span class="workout__icon">⏱</span>
             <span class="workout__value">${workout.duration}</span>
             <span class="workout__unit">min</span>
-          </div>`
-          console.log(html);
+          </div>
+          <div class="workout__details">
+            <span class="workout__icon">⚡️</span>
+            <span class="workout__value">${workout.type === 'running' ? workout.pace : workout.speed}</span>
+            <span class="workout__unit">${workout.type === 'running' ? 'min/km' : 'km/h'}</span>
+          </div>
+          <div class="workout__details">
+            <span class="workout__icon">${workout.type === 'running' ? '🦶🏼' : '⛰'}</span>
+            <span class="workout__value">${workout.type === 'running' ? workout.cadence : workout.elevGain}</span>
+            <span class="workout__unit">${workout.type === 'running' ? 'spm' : 'm'}</span>
+          </div>
+        </li>`;
+
+        form.insertAdjacentHTML('afterend', html);
+
     };
 };
 
 const app = new App();
+
+// ${("Running on " + workout.date).slice(0, -45)}
+
