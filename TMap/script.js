@@ -20,6 +20,9 @@ class Workout {
         this.distance = distance;
         this.duration = duration;
     }
+    description(){
+        return `${this.type[0].toUpperCase() + this.type.slice(1)} on ${this.date.toString().slice(4,10)}`;
+    }
 }
 
 
@@ -49,10 +52,6 @@ class Cycling extends Workout {
     }
 };
 
-// const run = new Running([10, 15], 10, 260, 60);
-// const cycl = new Cycling([10, 15], 20, 60, 500);
-// console.log(run);
-// console.log(cycl);
 
 class App {
     #counter = 1;
@@ -64,8 +63,9 @@ class App {
         this._getPosition();
         form.addEventListener('submit', this._newWorkout.bind(this));        
         inputType.addEventListener('change', this._toggleElevationField);
+        containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
     };
-    
+
     _getPosition(){
         if(navigator.geolocation)
             navigator.geolocation.getCurrentPosition(this._loadMap.bind(this), function(){
@@ -92,14 +92,35 @@ class App {
     _showForm(mapE){
         this.#mapEvent = mapE;
         form.classList.remove("hidden");
+        form.style.display = "grid";
         inputDistance.focus();
     };
+
+    _hideform(){
+        inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value = "";
+        form.style.display = "none";
+        form.classList.add("hidden");
+
+    }
 
     _toggleElevationField(e){
         e.preventDefault();
         inputCadence.closest('.form__row').classList.toggle( 'form__row--hidden');
         inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
     };
+
+    _moveToPopup(e){
+        const workoutElement = e.target.closest(".workout");
+        if(!workoutElement) return;
+        const thisWorkout = this.#workouts.find(work => work.id === workoutElement.dataset.id);
+        this.#map.setView(thisWorkout.cords, 14, {
+            animate: true,
+            pan: {
+                duration: 1
+            },
+        });
+
+    }
 
     _newWorkout(e){
         const validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp));
@@ -111,7 +132,6 @@ class App {
         const duration = +inputDuration.value; 
         const {lat, lng} = this.#mapEvent.latlng;
         let workout;
-
 
         if (type === "running"){
             const cadence = +inputCadence.value;
@@ -133,9 +153,8 @@ class App {
         this.#workouts.push(workout);
         this._renderWorkoutMarker(workout);
         this._renderWorkout(workout);
-
-        // form.classList.add("hidden");
-        inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value = "";
+        this._hideform();
+        
     
         this.#counter ++;
     };
@@ -149,14 +168,14 @@ class App {
                 closeOnClick: false,
                 className: `${workout.type}-popup`,
         }))
-        .setPopupContent(`Workout ${this.#counter}`)
+        .setPopupContent(`${workout.description()}`)
         .openPopup();
     };
 
     _renderWorkout(workout){
         const html = `
         <li class="workout workout--${workout.type}" data-id="${workout.id}">
-          <h2 class="workout__title">"${workout.type === 'running' ? 'Running' : 'Cycling'} on ${workout.date.toString().slice(4,10)}"</h2>
+          <h2 class="workout__title">"${workout.description()}"</h2>
           <div class="workout__details">
             <span class="workout__icon">${workout.type === 'running' ? "🏃‍♂️" : "🚴‍♀️"}</span>
             <span class="workout__value">${workout.distance}</span>
@@ -185,6 +204,3 @@ class App {
 };
 
 const app = new App();
-
-// ${("Running on " + workout.date).slice(0, -45)}
-
