@@ -20,9 +20,7 @@ class Workout {
         this.distance = distance;
         this.duration = duration;
     }
-    description(){
-        return `${this.type[0].toUpperCase() + this.type.slice(1)} on ${this.date.toString().slice(4,10)}`;
-    }
+    
 }
 
 
@@ -31,11 +29,17 @@ class Running extends Workout {
         super(type, cords, distance, duration);
         this.cadence = cadence;
         this.calcPace();
+        this.descriptionSent();
+
     }
 
     calcPace(){
         this.pace = this.duration / this.distance;
         return this.pace;
+    }
+    descriptionSent(){
+        this.description = `${this.type[0].toUpperCase() + this.type.slice(1)} on ${this.date.toString().slice(4,10)}`;
+        return this.description;
     }
 };
 
@@ -44,11 +48,17 @@ class Cycling extends Workout {
         super(type, cords, distance, duration);
         this.elevGain = elevGain;
         this.calcSpeed();
+        this.descriptionSent();
     }
 
     calcSpeed(){
         this.speed = this.distance / (this.duration / 60);
         return this.speed;
+    }
+
+    descriptionSent(){
+        this.description = `${this.type[0].toUpperCase() + this.type.slice(1)} on ${this.date.toString().slice(4,10)}`;
+        return this.description;
     }
 };
 
@@ -88,6 +98,10 @@ class App {
         }).addTo(this.#map);
 
         this.#map.on("click", this._showForm.bind(this));
+
+        this.#workouts.forEach(work => {
+            this._renderWorkoutMarker(work);
+        });
     };
 
     _showForm(mapE){
@@ -170,14 +184,14 @@ class App {
                 closeOnClick: false,
                 className: `${workout.type}-popup`,
         }))
-        .setPopupContent(`${workout.description()}`)
+        .setPopupContent(workout.description)
         .openPopup();
     };
     
     _renderWorkout(workout){
         const html = `
         <li class="workout workout--${workout.type}" data-id="${workout.id}">
-          <h2 class="workout__title">"${workout.description()}"</h2>
+          <h2 class="workout__title">${workout.description}</h2>
           <div class="workout__details">
             <span class="workout__icon">${workout.type === 'running' ? "🏃‍♂️" : "🚴‍♀️"}</span>
             <span class="workout__value">${workout.distance}</span>
@@ -208,14 +222,16 @@ class App {
 
     _getLocalStorage(){
         const data = JSON.parse(localStorage.getItem('workouts'));
-        console.log(data);
 
         if(!data) return;
-
         this.#workouts = data;
-        // this.#workouts.forEach(work => {
-        //     this._renderWorkout(work);
-        // });
+        this.#workouts.forEach(work => {
+            this._renderWorkout(work);
+        });
+    };
+    reset(){
+        localStorage.removeItem('workouts');;
+        location.reload();
     }
 
 };
