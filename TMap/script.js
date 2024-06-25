@@ -52,7 +52,7 @@ class Cycling extends Workout {
     }
 
     calcSpeed(){
-        this.speed = this.distance / (this.duration / 60);
+        this.speed = (this.distance / (this.duration / 60)).toFixed(1);
         return this.speed;
     }
 
@@ -212,9 +212,21 @@ class App {
             <span class="workout__value">${workout.type === 'running' ? workout.cadence : workout.elevGain}</span>
             <span class="workout__unit">${workout.type === 'running' ? 'spm' : 'm'}</span>
           </div>
+          <button class="workout__btn">Delete</button>
         </li>`;
 
         form.insertAdjacentHTML('afterend', html);
+        const deleteBtn = document.querySelector('.workout__btn');
+        console.log(deleteBtn);
+        console.log(this.#workouts);
+        const workouts = this.#workouts;
+        deleteBtn.addEventListener('click', deleteWorkout);
+        function deleteWorkout(e){
+            const selectedWorkout = e.target.closest('.workout');
+            console.log(selectedWorkout);
+            const thisWorkout = workouts.find(work => work.id === selectedWorkout.dataset.id);
+            console.log("thisWorkout", thisWorkout);
+        };
     };
     _setLocalStorage(){
         localStorage.setItem('workouts', JSON.stringify(this.#workouts));
