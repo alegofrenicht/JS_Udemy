@@ -9,6 +9,8 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+const deleteBtn = document.querySelectorAll('.workout__btn');
+const deleteAll = document.querySelector('.deleteAll__btn');
 
 class Workout {
     date = new Date();
@@ -75,7 +77,28 @@ class App {
         form.addEventListener('submit', this._newWorkout.bind(this));        
         inputType.addEventListener('change', this._toggleElevationField);
         containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+        containerWorkouts.addEventListener('click', this._deleteWorkout.bind(this));
+        deleteAll.addEventListener('click', this._deleteAll.bind(this));
     };
+    
+    
+    _deleteWorkout(e){
+            const selectedWorkout = e.target.closest('.workout');
+            if(e.target.classList[0] != "workout__btn") return;
+            const thisWorkout = this.#workouts.find(work => work.id === selectedWorkout.dataset.id);
+            this.#workouts = this.#workouts.filter(workout => workout != thisWorkout)
+            this._setLocalStorage();
+            this._getLocalStorage();
+            location.reload();
+            
+        };
+
+    _deleteAll(){
+        this.#workouts = [];
+        this._setLocalStorage();
+        this._getLocalStorage();
+        location.reload();
+    }
 
     _getPosition(){
         if(navigator.geolocation)
@@ -170,8 +193,7 @@ class App {
         this._renderWorkout(workout);
         this._hideform();
         this._setLocalStorage();
-        
-    
+
         this.#counter ++;
     };
     _renderWorkoutMarker(workout){
@@ -215,18 +237,8 @@ class App {
           <button class="workout__btn">Delete</button>
         </li>`;
 
+        deleteAll.style.display = "flex";
         form.insertAdjacentHTML('afterend', html);
-        const deleteBtn = document.querySelector('.workout__btn');
-        console.log(deleteBtn);
-        console.log(this.#workouts);
-        const workouts = this.#workouts;
-        deleteBtn.addEventListener('click', deleteWorkout);
-        function deleteWorkout(e){
-            const selectedWorkout = e.target.closest('.workout');
-            console.log(selectedWorkout);
-            const thisWorkout = workouts.find(work => work.id === selectedWorkout.dataset.id);
-            console.log("thisWorkout", thisWorkout);
-        };
     };
     _setLocalStorage(){
         localStorage.setItem('workouts', JSON.stringify(this.#workouts));
@@ -242,7 +254,7 @@ class App {
         });
     };
     reset(){
-        localStorage.removeItem('workouts');;
+        localStorage.removeItem('workouts');
         location.reload();
     }
 

@@ -57,7 +57,7 @@
   
   .workouts {
     list-style: none;
-    height: 77vh;
+    /* height: 77vh; */
     overflow-y: scroll;
     overflow-x: hidden;
   }
@@ -122,6 +122,21 @@
     margin-top: 1.5rem;
     font-family: inherit;
     font-size: 1.5rem;
+    border: none;
+    border-radius: 3px;
+    background-color: var(--color-brand--2);
+    transition: all 0.2s;
+  }
+
+  .deleteAll__btn{
+    display: none;
+    align-items: center;
+    align-self: self-end;
+    width: 25%;
+    padding: 0.3rem 1.1rem;
+    margin-top: 1.5rem;
+    font-family: inherit;
+    font-size: 1.8rem;
     border: none;
     border-radius: 3px;
     background-color: var(--color-brand--2);
