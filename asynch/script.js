@@ -5,22 +5,56 @@ const countriesContainer = document.querySelector('.countries');
 const inputLat = document.querySelector('.form__label--lat');
 const inputLng = document.querySelector('.form__label--lng');
 
-const getData = function(lat, lng){
-    fetch(`https://geocode.xyz/${lat},${lng}?geoit=json?auth=562661909662180603598x101003`)
-    .then(response =>
-        response.json())
-    .then(data => 
-        console.log(data)
-    )
-}
-// btn.addEventListener('click', function(e){
-    // lat = +inputLat.value;
-    // lng = +inputLng.value;
-    // btn.style.display = 'none';
-    // getCountryData('israel');
-// });
+let country;
 
-getData(52.508, 13.381);
+
+const getJSON = function(url, errorMsg = "Something went wrong"){
+    return fetch(url).then((response) => {
+        if(!response.ok)
+            throw new Error(`${errorMsg} (${response.status})`);
+        // console.log(response.json())
+        return response.json();
+        });
+};
+
+
+const getCountryData = function(country){
+    getJSON(`https://restcountries.com/v2/name/${country}`, "Country not found")
+    .then((data) => {
+        renderCountry(data[0]);
+        const neighbour = data[0].borders?.[0];
+        if(!neighbour) throw new Error("No neighbour found");
+        
+        return getJSON(`https://restcountries.com/v2/alpha/${neighbour}`, "Country not found");
+        })
+        .then(data => renderCountry(data, 'neighbour'))
+        .catch(err => {
+            console.log(err);
+            alert(err)
+        })
+        .finally(() => {
+            console.log('finally');
+        })
+}
+const whereAmI = function(lat, lng){
+    fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=147952128638216e15983197x79809`)
+    .then(response => {
+        if(!response.ok) throw new Error(`Sometihng went wrong ${response.status})`)
+        return response.json()})
+    .then(data => {
+        if(!data.country) throw new Error(`Country not found`);
+        return data.country})
+    .then(data => {
+        getCountryData(data);
+    })
+    .catch(err => alert(err));
+};
+
+btn.addEventListener('click', function(){
+    btn.style.display = 'none';
+    whereAmI(52.508, 13.381);
+    
+});
 
 
 
@@ -73,34 +107,7 @@ const renderCountry= function(data, className = ''){
 
 // https://countries-api-836d.onrender.com/countries/
 
-// const getJSON = function(url, errorMsg = "Something went wrong"){
-//     return fetch(url).then((response) => {
-//         if(!response.ok)
-//             throw new Error(`${errorMsg} (${response.status})`);
-//         // console.log(response.json())
-//         return response.json();
-//         });
-// };
 
-
-const getCountryData = function(country){
-    getJSON(`https://restcountries.com/v2/name/${country}`, "Country not found")
-    .then((data) => {
-        renderCountry(data[0]);
-        const neighbour = data[0].borders?.[0];
-        if(!neighbour) throw new Error("No neighbour found");
-        
-        return getJSON(`https://restcountries.com/v2/alpha/${neighbour}`, "Country not found");
-        })
-        .then(data => renderCountry(data, 'neighbour'))
-        .catch(err => {
-            console.log(err);
-            alert(err)
-        })
-        .finally(() => {
-            console.log('finally');
-        })
-}
 
 
 
