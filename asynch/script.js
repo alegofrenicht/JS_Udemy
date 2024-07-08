@@ -2,11 +2,22 @@
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
-const inputLat = document.querySelector('.form__label--lat');
-const inputLng = document.querySelector('.form__label--lng');
+// const inputLat = document.querySelector('.form__label--lat');
+// const inputLng = document.querySelector('.form__label--lng');
 
 let country;
 
+
+const getPosition = function(){
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            position => resolve(position),
+            err => console.error(err)
+        );
+    });
+}
+
+// getPosition().then(res => {return [lat,lng] = res.coords});
 
 const getJSON = function(url, errorMsg = "Something went wrong"){
     return fetch(url).then((response) => {
@@ -52,7 +63,7 @@ const whereAmI = function(lat, lng){
 
 btn.addEventListener('click', function(){
     btn.style.display = 'none';
-    whereAmI(52.508, 13.381);
+    whereAmI(getPosition().then(res => {console.log([lat,lng] = res.coords)}));
     
 });
 
