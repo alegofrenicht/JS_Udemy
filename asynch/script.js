@@ -10,12 +10,17 @@ let country;
 
 const getPosition = function(){
     return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-            position => resolve(position),
-            err => console.error(err)
-        );
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+        //     position => resolve(position),
+        //     err => console.error(err)
+        // );
     });
 }
+
+getPosition().then(pos => {
+    const coords = [pos.coords.latitude, pos.coords.longitude];
+    return coords;
+});
 
 // getPosition().then(res => {return [lat,lng] = res.coords});
 
@@ -47,8 +52,12 @@ const getCountryData = function(country){
             console.log('finally');
         })
 }
-const whereAmI = function(lat, lng){
-    fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=147952128638216e15983197x79809`)
+const whereAmI = function(){
+    getPosition().then(pos => {
+        const coords = [pos.coords.latitude, pos.coords.longitude];
+        return coords
+    }).then( res =>
+    fetch(`https://geocode.xyz/${res[0]},${res[1]}?geoit=json&auth=147952128638216e15983197x79809`))
     .then(response => {
         if(!response.ok) throw new Error(`Sometihng went wrong ${response.status})`)
         return response.json()})
@@ -63,7 +72,7 @@ const whereAmI = function(lat, lng){
 
 btn.addEventListener('click', function(){
     btn.style.display = 'none';
-    whereAmI(getPosition().then(res => {console.log([lat,lng] = res.coords)}));
+    whereAmI();
     
 });
 
