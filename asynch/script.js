@@ -17,13 +17,6 @@ const getPosition = function(){
     });
 }
 
-getPosition().then(pos => {
-    const coords = [pos.coords.latitude, pos.coords.longitude];
-    return coords;
-});
-
-// getPosition().then(res => {return [lat,lng] = res.coords});
-
 const getJSON = function(url, errorMsg = "Something went wrong"){
     return fetch(url).then((response) => {
         if(!response.ok)
