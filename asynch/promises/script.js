@@ -11,26 +11,47 @@ const wait = function(seconds){
 let currentImage;
 
 const createImage = function(imgPath){
-    const image = document.createElement('img');
-    image.src = imgPath;
+    return new Promise(function (resolve, reject){
+        const image = document.createElement('img');
+        image.src = imgPath;
 
-    image.addEventListener('load', function(){
-        imgContainer.append(image);
-        return image
-    });
+        image.addEventListener('load', function(){
+            imgContainer.append(image);
+            resolve(image)
+        });
     // image.addEventListener('error', function(){
     //     reject(new Error('Image not found'));
     // });
-    };
+    })};
 
-(async function(){
-    const img1 = createImage('img-1.jpg');
-    await wait(2);
-    img1.style.display = 'none';
-    console.log('HELLO')
+const images = ['img-1.jpg', 'img-2.jpg', 'img-3.jpg'];
 
+const loadAll = async function(imgArr){
+    const imgs = imgArr.map(async img =>
+        const image = await createImage(img);
+    });
+    console.log(imgs);
+};
 
-})();
+loadAll(images);
+// const loadNPause = async function(){
+//     try{
+//         let img = await createImage('img-1.jpg');
+//         console.log('Image 1 loaded')
+//         await wait(2);
+//         img.style.display = 'none';
+//         img = await createImage('img-2.jpg');
+//         console.log('Image 2 loaded')
+//         await wait(2);
+//         img.style.display = 'none';
+//         img = await createImage('img-3.jpg');
+//         console.log('Image 3 loaded')
+//         await wait(2);
+//         img.style.display = 'none';
+//     }catch(err){console.log(err)}
+// };
+
+// loadNPause();
 
 
 
