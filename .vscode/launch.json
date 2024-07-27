@@ -4,9 +4,10 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Launch Program",
-            "program": "${workspaceFolder}/modern js/script.js",
+            "program": "${workspaceFolder}/modern_js/script.js",
             "request": "launch",
             "skipFiles": [
                 "<node_internals>/**"
@@ -15,7 +16,7 @@
         },
         {
             "name": "Launch Program 2",
-            "program": "${workspaceFolder}/modern js/importFile.js",
+            "program": "${workspaceFolder}/modern_js/importFile.js",
             "request": "launch",
             "skipFiles": [
                 "<node_internals>/**"
